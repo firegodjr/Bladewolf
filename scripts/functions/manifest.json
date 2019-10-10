@@ -1,0 +1,10 @@
+{
+    "botPlugins": [
+        "rolecolor",
+        "rolename",
+        "say",
+        "help",
+        "accuse",
+        "roll"
+    ]
+}

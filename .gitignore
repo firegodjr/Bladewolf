@@ -1,0 +1,9 @@
+# Exclude node files
+node_modules/
+
+# Exclude bot-specific data
+Data/*
+auth.json
+
+# Exclude scripts
+/*.bat
