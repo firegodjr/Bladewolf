@@ -75,6 +75,10 @@ function LoadBotFunctions(): BotFunction[]
     return functions;
 }
 
+/**
+ * Registers functions with the global BotState object
+ * @param botFunctions 
+ */
 function RegisterBotFunctions(botFunctions: BotFunction[]): void
 {
     botFunctions.forEach((func) => {

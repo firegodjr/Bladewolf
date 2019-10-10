@@ -2,8 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var persistence_1 = require("./persistence");
 var util_1 = require("../util");
+var opmgr_1 = require("./opmgr");
 var Discord = require('discord.js');
 var fs = require('fs');
+/**
+ * Singleton module that handles all state-related functionality
+ */
 var BotState = /** @class */ (function () {
     function BotState() {
         this._behaviorKeywordMap = {};
@@ -15,6 +19,9 @@ var BotState = /** @class */ (function () {
         }
         this._data.LoadValuesFromFile(this._DATA_STORE_FILE);
     }
+    /**
+     * Saves all data to the predefined default botData.json file
+     */
     BotState.prototype.SaveData = function () {
         if (this._data) {
             this._data.SaveValuesToFile(this._DATA_STORE_FILE);
@@ -46,15 +53,33 @@ var BotState = /** @class */ (function () {
         this._behaviorKeywordMap = {};
         this._botFunctions = [];
     };
+    /**
+     * Executes a dynamically-loaded command, if allowed by user permissions
+     * @param key Command provided by user
+     * @param message Message containing the command
+     * @param channel The channel containing the command
+     * @param args Arguments after the command
+     * @returns True if this command was correctly handled
+     */
     BotState.prototype.ExecuteBehavior = function (key, message, channel, args) {
         if (Object.keys(this._behaviorKeywordMap).includes(key)) {
             console.log("Attempting to execute behavior for key " + key);
-            var result = this.GetFunctionByKey(key).behavior(message, channel, args);
-            console.log(result);
-            if (!result.success) {
-                util_1.Speak(channel, "Command failed: " + key);
-                if (result.failReason) {
-                    util_1.Speak(channel, "Reason: " + result.failReason);
+            var func = this.GetFunctionByKey(key);
+            var permLevel = func.permLevel;
+            if (!permLevel) {
+                permLevel = opmgr_1.PermLevel.USER;
+            }
+            if (opmgr_1.OpManager.GetUserPermLevel(channel, message.author) < permLevel) {
+                util_1.Speak(channel, "You do not have permission to perform this command.");
+            }
+            else {
+                var result = func.behavior(message, channel, args);
+                console.log(result);
+                if (!result.success) {
+                    util_1.Speak(channel, "Command failed: " + key);
+                    if (result.failReason) {
+                        util_1.Speak(channel, "Reason: " + result.failReason);
+                    }
                 }
             }
             return true;

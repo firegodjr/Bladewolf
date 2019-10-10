@@ -1,5 +1,6 @@
 import { Dictionary, ReadFile, WriteFile } from "../util";
 import { resolve } from "path";
+import { PermLevel } from "./opmgr";
 
 // Filesystem access
 var fs = require('fs');
@@ -31,4 +32,12 @@ export class PersistentDataStore {
             console.log("Cannot load data from '" + resolve(path) + "'. Does the file exist?");
         }
     }
+}
+
+export interface ChannelData {
+    userPermOverrides: UserMeta[]
+}
+
+export interface UserMeta {
+    permLevel: PermLevel
 }

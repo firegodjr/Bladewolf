@@ -1,6 +1,7 @@
 "use strict";
 var util_1 = require("../util");
 var botstate_1 = require("../state/botstate");
+var opmgr_1 = require("../state/opmgr");
 var help = function (message, channel, args) {
     var thingToSay = "";
     var botFunctions = botstate_1.State.GetRegisteredFunctions();
@@ -25,6 +26,7 @@ var help = function (message, channel, args) {
                 thingToSay += "Usage: " + bf.usage + "\n";
             if (bf.description)
                 thingToSay += "Description: " + bf.description + "\n";
+            thingToSay += "Required permission level: " + opmgr_1.PermLevel[bf.permLevel || opmgr_1.PermLevel.USER] + "\n";
         }
         else {
             thingToSay = "There is no command with alias '" + args[0] + "'";

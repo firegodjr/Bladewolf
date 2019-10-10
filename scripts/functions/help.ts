@@ -2,6 +2,7 @@ import { BotFunctionBehavior, BotFunction, BehaviorResult } from "./botfunction"
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
 import { Speak } from "../util";
 import { State } from "../state/botstate";
+import { PermLevel } from "../state/opmgr";
 
 let help: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
     let thingToSay = "";
@@ -28,6 +29,7 @@ let help: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChan
                 thingToSay += "Usage: " + bf.usage + "\n";
             if(bf.description)
                 thingToSay += "Description: " + bf.description + "\n";
+            thingToSay += "Required permission level: " + PermLevel[bf.permLevel || PermLevel.USER] + "\n";
         }
         else {
             thingToSay = "There is no command with alias '" + args[0] + "'";
