@@ -13,6 +13,7 @@ var PersistentDataStore = /** @class */ (function () {
     };
     PersistentDataStore.prototype.SetValue = function (key, value) {
         this._data[key] = value;
+        console.log("Writing '" + value + "' to '" + key + "'");
     };
     PersistentDataStore.prototype.SaveValuesToFile = function (path) {
         util_1.WriteFile(path, JSON.stringify(this._data));

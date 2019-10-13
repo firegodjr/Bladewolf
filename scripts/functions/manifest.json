@@ -5,6 +5,7 @@
         "say",
         "help",
         "accuse",
-        "roll"
+        "roll",
+        "permissions"
     ]
 }

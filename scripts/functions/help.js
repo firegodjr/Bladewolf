@@ -26,7 +26,7 @@ var help = function (message, channel, args) {
                 thingToSay += "Usage: " + bf.usage + "\n";
             if (bf.description)
                 thingToSay += "Description: " + bf.description + "\n";
-            thingToSay += "Required permission level: " + opmgr_1.PermLevel[bf.permLevel || opmgr_1.PermLevel.USER] + "\n";
+            thingToSay += "Minimum permission level: " + opmgr_1.PermLevel[bf.permLevel || opmgr_1.PermLevel.USER] + "\n";
         }
         else {
             thingToSay = "There is no command with alias '" + args[0] + "'";

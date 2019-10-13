@@ -5,5 +5,9 @@ node_modules/
 Data/*
 auth.json
 
+# Exclude compiled files
+scripts/*/*.js
+scripts/*/*.js.map
+
 # Exclude scripts
 /*.bat

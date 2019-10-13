@@ -14,6 +14,7 @@ export class PersistentDataStore {
 
     public SetValue(key: string, value: any) {
         this._data[key] = value;
+        console.log("Writing '" + value + "' to '" + key + "'");
     }
 
     public SaveValuesToFile(path: string) {
@@ -34,10 +35,11 @@ export class PersistentDataStore {
     }
 }
 
-export interface ChannelData {
-    userPermOverrides: UserMeta[]
+export interface GuildMeta {
+    userPermOverrides: Dictionary<UserMeta>
 }
 
 export interface UserMeta {
     permLevel: PermLevel
+    data: Dictionary<any>
 }
