@@ -1,6 +1,6 @@
 import { Dictionary, ReadFile, WriteFile } from "../util";
 import { resolve } from "path";
-import { PermLevel } from "./opmgr";
+import { PermLevel } from "./permmgr";
 import { Guild, GuildMember, User } from "discord.js";
 import { userInfo } from "os";
 
@@ -24,7 +24,10 @@ export class PersistentDataStore {
     public InitGuild(guild: Guild): GuildMeta {
         let guildKey = this._getGuildKey(guild);
         if(!this._data[guildKey]) {
-            this._data[guildKey] = {};
+            this._data[guildKey] = {
+                userData: {},
+                data: {}
+            };
         }
 
         return this._data[guildKey];
@@ -44,7 +47,10 @@ export class PersistentDataStore {
         let guildData = this.InitGuild(member.guild);
 
         if(!guildData.data[member.user.id]) {
-            guildData.data[member.user.id] = {};
+            guildData.data[member.user.id] = {
+                permLevel: PermLevel.USER,
+                data: {}
+            };
         }
 
         return guildData.data[member.user.id];
@@ -109,6 +115,6 @@ export interface GuildMeta {
 }
 
 export interface UserMeta {
-    permLevel: PermLevel
+    permLevel: PermLevel,
     data: Dictionary<any>
 }

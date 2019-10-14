@@ -38,6 +38,7 @@ let rollBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel 
 }
 
 let rollFunction: BotFunction = {
+    id: "roll",
     keys: ["roll"],
     description: "Rolls some dice",
     usage: "!roll <# of dice> <type of dice (Ex. d10)>",

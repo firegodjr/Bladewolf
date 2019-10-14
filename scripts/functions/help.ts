@@ -2,14 +2,14 @@ import { BotFunctionBehavior, BotFunction, BehaviorResult } from "./botfunction"
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
 import { Speak } from "../util";
 import { State } from "../state/botstate";
-import { PermLevel } from "../state/opmgr";
+import { PermLevel } from "../state/permmgr";
 
 let help: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
     let thingToSay = "";
     let botFunctions = State.GetRegisteredFunctions();
 
     if(args.length == 0) {
-        thingToSay += "All Bot Functions (Say !help <function> for specific help)\n"
+        thingToSay += "All Bot Functions (Say !help <function> for specific help)\n";
         botFunctions.forEach((bf) => {
             if(!bf.hidden) {
                 thingToSay += "> !" + bf.keys[0];
@@ -23,7 +23,7 @@ let help: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChan
     else {
         let bf = State.GetFunctionByKey(args[0])
         if(bf && !bf.hidden) {
-            thingToSay += "Function: " + bf.keys[0] + "\n";
+            thingToSay += "Function: " + bf.id + "\n";
             thingToSay += "Aliases: " + bf.keys.join(", ") + "\n";
             if(bf.usage)
                 thingToSay += "Usage: " + bf.usage + "\n";
@@ -42,6 +42,7 @@ let help: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChan
 }
 
 let botFunction: BotFunction = {
+    id: "help",
     keys: ["help"],
     description: "Explains the bot functions in detail",
     usage: "!help, !help <function>",

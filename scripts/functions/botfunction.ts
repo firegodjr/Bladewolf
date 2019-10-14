@@ -1,10 +1,11 @@
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
-import { PermLevel } from "../state/opmgr";
+import { PermLevel } from "../state/permmgr";
 
 /**
  * Represents a keyword function that this bot can handle
  */
 export interface BotFunction {
+    id: string,
     keys: string[],
     behavior: BotFunctionBehavior,
     description?: string,

@@ -38,6 +38,7 @@ let setRoleColor: BotFunctionBehavior = (message: Message, channel: TextChannel 
 }
 
 let botFunction: BotFunction = {
+    id: "rolecolor",
     keys: ["rolecolor", "color", "colorme"],
     description: "Changes the color of your name-coloring role",
     usage: "!rolecolor <hex color, ex. #4bec13>",

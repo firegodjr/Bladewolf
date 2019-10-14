@@ -1,6 +1,6 @@
 import { BotFunction, BotFunctionBehavior, BehaviorResult } from "./botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
-import { OpManager, PermLevel } from "../state/opmgr";
+import { PermManager, PermLevel } from "../state/permmgr";
 import { Speak } from "../util";
 
 let permBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
@@ -17,7 +17,7 @@ let permBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel 
                 else {
                     return {success: false, failReason: "Perm level missing, valid values are " + validPermLevels}
                 }
-                if(OpManager.SetUserPerms(channel as TextChannel, message.author, mention, enumFromStr)) {
+                if(PermManager.SetUserPerms(channel as TextChannel, message.author, mention, enumFromStr)) {
                     Speak(channel, "Role of user " + mention.tag + " has been set to " + args[2]);
                     return {success: true}
                 }
@@ -33,7 +33,7 @@ let permBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel 
         case "get":
             let mention = message.mentions.users.first();
             if(mention) {
-                Speak(channel, "This user has permission level " + validPermLevels[OpManager.GetUserPermLevel(channel as TextChannel, mention)])
+                Speak(channel, "This user has permission level " + validPermLevels[PermManager.GetUserPermLevelFromChannel(channel as TextChannel, mention)])
                 return {success: true}
             }
             else return { success: false, failReason: "No user mentioned." }
@@ -49,6 +49,7 @@ let permBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel 
 
 
 let permFunction: BotFunction = {
+    id: "permissions",
     keys: ["perm", "perms", "permission", "permissions"],
     behavior: permBehavior,
     description: "Allows setting or clearing bot permissions for a user",

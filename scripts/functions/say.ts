@@ -15,6 +15,7 @@ let say: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChann
 }
 
 let botFunction: BotFunction = {
+    id: "say",
     keys: ["say", "echo", "repeat"],
     description: "Simply repeats what you type after the command",
     usage: "!say <text>",

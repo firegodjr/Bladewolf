@@ -18,6 +18,7 @@ let rolenameBehavior: BotFunctionBehavior = (message: Message, channel: TextChan
 }
 
 let rolenameFunction: BotFunction = {
+    id: "rolename",
     keys: ["rolename"],
     description: "Changes the name of this user's name-coloring role",
     usage: "!rolename <new name>",

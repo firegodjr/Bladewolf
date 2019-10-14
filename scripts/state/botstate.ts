@@ -1,8 +1,8 @@
-import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
+import { Message, TextChannel, DMChannel, GroupDMChannel, Guild } from "discord.js";
 import { BotFunction } from "../functions/botfunction";
 import { PersistentDataStore } from "./persistence";
 import { Dictionary, WriteFile, ReadFile, Speak } from "../util";
-import { OpManager, PermLevel } from "./opmgr";
+import { PermManager, PermLevel } from "./permmgr";
 
 var Discord = require('discord.js');
 var fs = require('fs');
@@ -16,6 +16,10 @@ class BotState {
     private _botFunctions: BotFunction[] = []
     private _data: PersistentDataStore = new PersistentDataStore();
     private readonly _DATA_STORE_FILE = "./Data/botData.json";
+    public readonly MANIFEST_FILE = "./scripts/functions/manifest.json";
+    public readonly LOGS_DIR = "/logs/"
+
+    public readonly COMMAND_PREFIX = "!";
 
     constructor() {
         if(!ReadFile(this._DATA_STORE_FILE)) {
@@ -77,15 +81,8 @@ class BotState {
     public ExecuteBehavior(key: string, message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): boolean {
         if(Object.keys(this._behaviorKeywordMap).includes(key)) {
             console.log("Attempting to execute behavior for key " + key)
-            let func = this.GetFunctionByKey(key);
-            let permLevel = func.permLevel;
-            if(!permLevel) {
-                permLevel = PermLevel.USER
-            }
-            if(OpManager.GetUserPermLevel(channel as TextChannel, message.author) < permLevel) {
-                Speak(channel, "You do not have permission to perform this command.");
-            }
-            else {
+            if(PermManager.GetUserHasPermissionToCallFunction(channel, message.author, key)) {
+                let func = this.GetFunctionByKey(key);
                 let result = func.behavior(message, channel, args);
                 console.log(result);
                 if(!result.success) {
@@ -94,6 +91,9 @@ class BotState {
                         Speak(channel, "Reason: " + result.failReason);
                     }
                 }
+            }
+            else {
+                Speak(channel, "You do not have permission to perform this command.");
             }
             return true;
         }

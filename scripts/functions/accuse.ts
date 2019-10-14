@@ -172,6 +172,7 @@ let PardonBehavior: BotFunctionBehavior = (message: Message, channel: TextChanne
 }
 
 let accuseFunction: BotFunction = {
+    id: "accuse",
     keys: ["accuse"],
     description: "Accuses a user of a crime",
     usage: "!accuse <@user> <crime>",
@@ -179,6 +180,7 @@ let accuseFunction: BotFunction = {
 }
 
 let incriminateFunction: BotFunction = {
+    id: "incriminate",
     keys: ["incriminate"],
     description: "Lists this user's accusations for all to see",
     usage: "!incriminate <@user>",
@@ -186,6 +188,7 @@ let incriminateFunction: BotFunction = {
 }
 
 let pardonFunction: BotFunction = {
+    id: "pardon",
     keys: ["pardon", "forgive"],
     description: "Pardons a user of a previous accusation",
     usage: "!pardon <@user> <accusation number>",
