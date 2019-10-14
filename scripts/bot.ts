@@ -29,6 +29,7 @@ interface BotPluginManifest {
 }
 
 const COMMAND_PREFIX = "!";
+const MANIFEST_FILE = "./scripts/functions/manifest.json";
 const CRIMES_FILE = DATA_DIR + "accusations.json";
 const COMMENDATIONS_FILE = DATA_DIR + "commendations.json";
 const REMIND_FILE = DATA_DIR + "reminders.json";
@@ -42,10 +43,10 @@ var reminderQueue: Reminder[] = [];
  */
 function LoadBotFunctions(): BotFunction[]
 {
-    console.log("Loading functions...");
+    console.log("Loading functions from " + resolve(MANIFEST_FILE));
     let functions: BotFunction[] = []
 
-    let data = fs.readFileSync("./scripts/functions/manifest.json")
+    let data = fs.readFileSync(MANIFEST_FILE)
     let manifest = JSON.parse(data) as BotPluginManifest;
     console.log("Now loading functions: " + manifest.botPlugins)
     manifest.botPlugins.forEach((bf: string) => {

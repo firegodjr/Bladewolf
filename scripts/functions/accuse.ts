@@ -6,8 +6,8 @@ import { MergeArgsPast, Speak } from "../util";
 
 const ACCUSATIONS_KEY = "accusations"
 
-if(!State.GetDataStore().GetValue(ACCUSATIONS_KEY)) {
-    State.GetDataStore().SetValue(ACCUSATIONS_KEY, {});
+if(!State.GetDataStore().GetGlobalValue(ACCUSATIONS_KEY)) {
+    State.GetDataStore().SetGlobalValue(ACCUSATIONS_KEY, {});
 }
 
 /**
@@ -15,7 +15,7 @@ if(!State.GetDataStore().GetValue(ACCUSATIONS_KEY)) {
  */
 function Accuse(channel: DMChannel | GroupDMChannel | TextChannel, user: User, crime: string)
 {
-    let crimeDictionary = State.GetDataStore().GetValue(ACCUSATIONS_KEY);
+    let crimeDictionary = State.GetDataStore().GetGlobalValue(ACCUSATIONS_KEY);
     if(!(user.tag in crimeDictionary))
     {
         crimeDictionary[user.tag] = [];
@@ -59,7 +59,7 @@ let AccuseBehavior: BotFunctionBehavior = (message: Message, channel: TextChanne
  */
 function ListAccusations(channel: DMChannel | GroupDMChannel | TextChannel, user: User)
 {
-    let crimeDictionary = State.GetDataStore().GetValue(ACCUSATIONS_KEY);
+    let crimeDictionary = State.GetDataStore().GetGlobalValue(ACCUSATIONS_KEY);
     const userNick = user.username;
     var crime = "";
     if(user.tag in crimeDictionary)
@@ -111,7 +111,7 @@ let IncriminateBehavior: BotFunctionBehavior = (message: Message, channel: TextC
  */
 function Pardon(channel: DMChannel | GroupDMChannel | TextChannel, sender: User, user: User, index: number)
 {
-    let crimeDictionary = State.GetDataStore().GetValue(ACCUSATIONS_KEY);
+    let crimeDictionary = State.GetDataStore().GetGlobalValue(ACCUSATIONS_KEY);
 
     // If the sender *is* the user being pardoned
     if(sender.tag == user.tag)
@@ -135,7 +135,7 @@ function Pardon(channel: DMChannel | GroupDMChannel | TextChannel, sender: User,
 }
 
 let PardonBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
-    let crimeDictionary = State.GetDataStore().GetValue(ACCUSATIONS_KEY);
+    let crimeDictionary = State.GetDataStore().GetGlobalValue(ACCUSATIONS_KEY);
     let mention = message.mentions.users.first();
     var crimeID: number = parseInt(args[2]) - 1;
     if(args.length == 1)

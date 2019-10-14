@@ -15,7 +15,7 @@ class BotState {
     private _behaviorKeywordMap: Dictionary<number> = {}
     private _botFunctions: BotFunction[] = []
     private _data: PersistentDataStore = new PersistentDataStore();
-    private readonly _DATA_STORE_FILE = "Data/botData.json";
+    private readonly _DATA_STORE_FILE = "./Data/botData.json";
 
     constructor() {
         if(!ReadFile(this._DATA_STORE_FILE)) {

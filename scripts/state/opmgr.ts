@@ -3,7 +3,7 @@ import { User, TextChannel, DMChannel, GroupDMChannel, Guild, ChannelData } from
 import { UserMeta, GuildMeta, PersistentDataStore } from "./persistence";
 import { Dictionary, Speak } from "../util";
 
-const PERM_KEY = "perms";
+const PERM_KEY = "guild";
 
 export enum PermLevel {
   BLOCKED,
@@ -23,13 +23,13 @@ export class OpManager {
     let dataStore: PersistentDataStore = State.GetDataStore();
     const GUILD_KEY = PERM_KEY + channel.guild.id;
 
-    if(!dataStore.GetValue(GUILD_KEY)) {
-      dataStore.SetValue(GUILD_KEY, { userPermOverrides: {} });
+    if(!dataStore.GetGlobalValue(GUILD_KEY)) {
+      dataStore.SetGlobalValue(GUILD_KEY, { userPermOverrides: {} });
       State.SaveData();
       Speak(channel, "No existing user metadata for this server found. Creating data...");
     }
     
-    let userPerms: Dictionary<UserMeta> = State.GetDataStore().GetValue(PERM_KEY + channel.guild.id).userPermOverrides;
+    let userPerms: Dictionary<UserMeta> = State.GetDataStore().GetGlobalValue(PERM_KEY + channel.guild.id).userPermOverrides;
     let data: UserMeta = userPerms[user.id];
     
     if(data) {
@@ -52,14 +52,14 @@ export class OpManager {
     if(userLevel >= PermLevel.ADMIN && userLevel > changedUserLevel) {
       const GUILD_KEY = PERM_KEY + channel.guild.id;
 
-      if(!dataStore.GetValue(GUILD_KEY)) {
-        dataStore.SetValue(GUILD_KEY, { userPermOverrides: {} });
+      if(!dataStore.GetGlobalValue(GUILD_KEY)) {
+        dataStore.SetGlobalValue(GUILD_KEY, { userPermOverrides: {} });
         Speak(channel, "No existing user metadata for this server found. Creating data...");
       }
       
-      let guildData = dataStore.GetValue(GUILD_KEY) as GuildMeta;
-      let userPerms: Dictionary<UserMeta> = guildData.userPermOverrides;
-      let user: UserMeta = userPerms[newOp.id];
+      let guildData = dataStore.GetGlobalValue(GUILD_KEY) as GuildMeta;
+      let userPerms: Dictionary<UserData> = guildData.userPermOverrides;
+      let user: UserData = userPerms[newOp.id];
 
       if(!user) {
         user = {
