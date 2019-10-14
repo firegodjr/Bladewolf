@@ -63,7 +63,8 @@ export class OpManager {
 
       if(!user) {
         user = {
-          permLevel: newPermLevel
+          permLevel: newPermLevel,
+          data: {}
         };
       }
       else {
