@@ -7,26 +7,32 @@ let permBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel 
     let validPermLevels: string[] = Object.keys(PermLevel).filter(x => !(parseInt(x) >= 0));
     switch(args[0]) {
         case "set":
-            if(args.length > 1 && message.mentions.users.size > 0) {
-                let enumFromStr: PermLevel;
-                let mention = message.mentions.users.first();
-                
-                if(args.length > 2 && validPermLevels.includes(args[2])) {
-                    enumFromStr = PermLevel[(args[2].toUpperCase()) as keyof typeof PermLevel]
+            if(args.length > 1) {
+                if(message.mentions.users.size > 0) {
+                    let enumFromStr: PermLevel;
+                    let mention = message.mentions.users.first();
+                    
+                    if(args.length > 2 && validPermLevels.includes(args[2].toUpperCase())) {
+                        let plArg = args[2].toUpperCase();
+                        enumFromStr = PermLevel[plArg as keyof typeof PermLevel]
+                    }
+                    else {
+                        return {success: false, failReason: "Invalid perm level, valid values are " + validPermLevels}
+                    }
+                    if(PermManager.SetUserPerms(channel as TextChannel, message.author, mention, enumFromStr)) {
+                        Speak(channel, "Perm level of user " + mention.tag + " has been set to " + args[2].toUpperCase());
+                        return {success: true}
+                    }
+                    else {
+                        return {success: false, failReason: "You are not allowed to set this user's perm level to " + args[2]}
+                    }
                 }
                 else {
-                    return {success: false, failReason: "Perm level missing, valid values are " + validPermLevels}
-                }
-                if(PermManager.SetUserPerms(channel as TextChannel, message.author, mention, enumFromStr)) {
-                    Speak(channel, "Role of user " + mention.tag + " has been set to " + args[2]);
-                    return {success: true}
-                }
-                else {
-                    return {success: false, failReason: "You are unable to set this user's permissions."}
+                    return {success: false, failReason: "Second argument must be a user mention."}
                 }
             }
             else {
-                return {success: false, failReason: "No user mentioned in perm change message"}
+                return {success: false, failReason: "Expected 3 arguments, but only got 1"}
             }
             
 

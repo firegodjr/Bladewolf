@@ -26,14 +26,7 @@ export class PermManager {
   public static GetUserPermLevel(guild: Guild, user: User): PermLevel {
     let dataStore: PersistentDataStore = State.GetDataStore();
     const GUILD_KEY = PERM_KEY + guild.id;
-
-    if(!dataStore.GetGlobalValue(GUILD_KEY)) {
-      dataStore.SetGlobalValue(GUILD_KEY, { userPermOverrides: {} });
-      State.SaveData();
-    }
-    
-    let userPerms: Dictionary<UserMeta> = State.GetDataStore().GetGlobalValue(PERM_KEY + guild.id).userPermOverrides;
-    let data: UserMeta = userPerms[user.id];
+    let data: UserMeta = State.GetDataStore().InitGuildMember(guild.member(user));
     
     if(data) {
       return data.permLevel;
@@ -57,27 +50,9 @@ export class PermManager {
     let userLevel = this.GetUserPermLevelFromChannel(channel, refUser);
     let changedUserLevel = this.GetUserPermLevelFromChannel(channel, newOp)
     let dataStore: PersistentDataStore = State.GetDataStore();
-    if(userLevel >= PermLevel.ADMIN && userLevel > changedUserLevel) {
-      const GUILD_KEY = PERM_KEY + channel.guild.id;
-
-      if(!dataStore.GetGlobalValue(GUILD_KEY)) {
-        dataStore.SetGlobalValue(GUILD_KEY, { userPermOverrides: {} });
-        Speak(channel, "No existing user metadata for this server found. Creating data...");
-      }
-      
-      let guildData = dataStore.GetGlobalValue(GUILD_KEY) as GuildMeta;
-      let userData: Dictionary<UserMeta> = guildData.userData;
-      let user: UserMeta = userData[newOp.id];
-
-      if(!user) {
-        user = {
-          permLevel: newPermLevel,
-          data: {}
-        };
-      }
-      else {
-        user.permLevel = newPermLevel;
-      }
+    if(userLevel > changedUserLevel && userLevel > newPermLevel) {
+      let user = State.GetDataStore().InitGuildMember(channel.guild.member(newOp));
+      user.permLevel = newPermLevel;
     }
     else {
       return false;
