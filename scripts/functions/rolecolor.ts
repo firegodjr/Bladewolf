@@ -7,26 +7,31 @@ let setRoleColor: BotFunctionBehavior = (message: Message, channel: TextChannel 
     if(role != undefined && role.editable)
     {
         var hexColor = args[0];
-        var validHex = hexColor.match("[g-zG-Z]") == null;
-        if(!hexColor.startsWith("#"))
-        {
-            Speak(channel, "Please enter a hex number. ex: #0f0ac3");
-            return {success: false}
+        if(hexColor) {
+            var validHex = hexColor.match("[g-zG-Z]") == null;
+            if(!hexColor.startsWith("#"))
+            {
+                Speak(channel, "Please enter a hex number. ex: #0f0ac3");
+                return {success: false}
+            }
+            else if(hexColor.endsWith("000000"))
+            {
+                return {success: false, failReason: "Unable to apply solid black names, sorry!"}
+            }
+            else if(!validHex)
+            {
+                return {success: false, failReason: "Given color code is not a valid hex color."}
+            }
+            else if(role != undefined)
+            {
+                role.edit({color: hexColor}).catch(e => {
+                    return Speak(message.channel, "Error: unable to edit user's role.");
+                    });
+                Speak(channel, "Set the role '" + role.name + "' color to " + args[0]);
+            }
         }
-        else if(hexColor.endsWith("000000"))
-        {
-            return {success: false, failReason: "Unable to apply solid black names"}
-        }
-        else if(!validHex)
-        {
-            return {success: false, failReason: "Invalid hexadecimal"}
-        }
-        else if(role != undefined)
-        {
-            role.edit({color: hexColor}).catch(e => {
-                return Speak(message.channel, "Error: unable to edit user's role.");
-                });
-            Speak(channel, "Set the role '" + role.name + "' color to " + args[0]);
+        else {
+            return {success: false, failReason: "Expected a color, but got nothing."}
         }
     }
     else
@@ -42,6 +47,7 @@ let botFunction: BotFunction = {
     keys: ["rolecolor", "color", "colorme"],
     description: "Changes the color of your name-coloring role",
     usage: "!rolecolor <hex color, ex. #4bec13>",
+    hidden: true,
     behavior: setRoleColor
 }
 

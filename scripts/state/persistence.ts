@@ -71,7 +71,7 @@ export class PersistentDataStore {
 
     public InitUser(user: User): UserMeta {
         if(!this._data[user.id]) {
-            this._data[user.id] = {};
+            this._data[user.id] = { data: {} };
         }
 
         return this._data[user.id];

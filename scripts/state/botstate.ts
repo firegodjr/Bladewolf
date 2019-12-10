@@ -7,6 +7,11 @@ import { PermManager, PermLevel } from "./permmgr";
 var Discord = require('discord.js');
 var fs = require('fs');
 
+export interface IBotManifest {
+    prefix?: string,
+    game?: string
+}
+
 /**
  * Singleton module that handles all state-related functionality
  */
@@ -83,12 +88,14 @@ class BotState {
             console.log("Attempting to execute behavior for key " + key)
             if(PermManager.GetUserHasPermissionToCallFunction(channel, message.author, key)) {
                 let func = this.GetFunctionByKey(key);
-                let result = func.behavior(message, channel, args);
-                console.log(result);
-                if(!result.success) {
-                    Speak(channel, "Command failed: " + key);
-                    if(result.failReason) {
-                        Speak(channel, "Reason: " + result.failReason);
+                if(func) {
+                    let result = func.behavior(message, channel, args);
+                    console.log(result);
+                    if(!result.success) {
+                        Speak(channel, "Command failed: " + key);
+                        if(result.failReason) {
+                            Speak(channel, "Reason: " + result.failReason + (func.usage ? "\nUsage: " + func.usage : ""));
+                        }
                     }
                 }
             }

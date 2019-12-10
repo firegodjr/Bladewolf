@@ -27,14 +27,11 @@ export function WriteFile(path: string, data: string): void {
  */
 export function LoadBotFunctions(): BotFunction[]
 {
-    console.log("Loading functions from " + resolve(State.MANIFEST_FILE));
     let functions: BotFunction[] = []
 
     let data = fs.readFileSync(State.MANIFEST_FILE)
     let manifest = JSON.parse(data) as BotPluginManifest;
-    console.log("Now loading functions: " + manifest.botPlugins)
     manifest.botPlugins.forEach((bf: string) => {
-        console.log("Importing " + bf);
         try {
             // If this module is cached, reimport it to get the newest version
             if(require.cache[require.resolve("./functions/" + bf)]) {
@@ -44,11 +41,13 @@ export function LoadBotFunctions(): BotFunction[]
             let m  = require("./functions/" + bf) as BotFunction | BotFunction[]
             if((m as BotFunction).behavior) {
                 functions.push(m as BotFunction);
+                console.log("From plugin " + bf + " imported " + (m as BotFunction).id);
             }
             else if((m as BotFunction[])[0]) {
                 let arr = m as BotFunction[];
                 arr.forEach((func) => {
                     functions.push(func);
+                    console.log("From plugin " + bf + " imported " + func.id);
                 });
             }
 
@@ -56,6 +55,7 @@ export function LoadBotFunctions(): BotFunction[]
             console.log("Something went wrong when trying to load " + bf + ": ", e)
         }
     });
+    console.log("Loaded " + functions.length + " functions from " + manifest.botPlugins.length + " files.")
 
     return functions;
 }
@@ -68,7 +68,6 @@ export function RegisterBotFunctions(botFunctions: BotFunction[]): void
 {
     botFunctions.forEach((func) => {
         State.RegisterFunctionBehavior(func);
-        console.log("Registered command: " + func.keys[0])
     });
 }
 
@@ -76,7 +75,7 @@ export function ParseMessage(client: Client, message: Message) {
     let commandPrefix = State.COMMAND_PREFIX;
     if (message.content.startsWith(commandPrefix))
     {
-        console.log("Message recieved: '" + message.content + "'");
+        console.log("[" + message.author.tag + "]: " + message.content + "'");
         var fullCommand = message.content.slice(commandPrefix.length);
         var channel = message.channel;
         var args = fullCommand.split(' ');
@@ -168,7 +167,9 @@ export function ParseMessage(client: Client, message: Message) {
   */
  export function Quote(channel: DMChannel | GroupDMChannel | TextChannel, thingToSay: string)
  {
-     channel.send("`>>> ` " + thingToSay);
+    let message = "`>>> ` " + thingToSay;
+     channel.send(message);
+    //  console.log("<Bladewolf>: " + message)
  }
  
  /**
@@ -176,5 +177,7 @@ export function ParseMessage(client: Client, message: Message) {
   */
  export function Speak(channel: DMChannel | GroupDMChannel | TextChannel, thingToSay: string)
  {
-     channel.send("`>>> " + thingToSay + "`");
+     let message = "`>>> " + thingToSay + "`";
+     channel.send(message);
+    //  console.log("<Bladewolf>: " + message)
  }

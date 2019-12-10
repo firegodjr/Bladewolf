@@ -22,6 +22,7 @@ let rolenameFunction: BotFunction = {
     keys: ["rolename"],
     description: "Changes the name of this user's name-coloring role",
     usage: "!rolename <new name>",
+    hidden: true,
     behavior: rolenameBehavior
 }
 

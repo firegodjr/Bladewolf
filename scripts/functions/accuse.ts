@@ -37,12 +37,11 @@ let AccuseBehavior: BotFunctionBehavior = (message: Message, channel: TextChanne
         if(mention != undefined)
         {
             accusation = MergeArgsPast(args, 1);
-            console.log("accusing " + mention.username + " of " + accusation + "...")
             Accuse(message.channel, mention, accusation);
         }
         else
         {
-            Speak(channel, "I don't know who " + args[1] + " is, but I'm sure they deserve to be called out.");
+            Speak(channel, "Nobody found to accuse, have they been @tagged correctly?");
         }
     }
     else {
@@ -64,7 +63,6 @@ function ListAccusations(channel: DMChannel | GroupDMChannel | TextChannel, user
     var crime = "";
     if(user.tag in crimeDictionary)
     {
-        console.log("We have a record for " + userNick + "!");
         var crimesLength = crimeDictionary[user.tag].length;
         if(crimesLength > 0)
         {
@@ -96,7 +94,7 @@ let IncriminateBehavior: BotFunctionBehavior = (message: Message, channel: TextC
         }
     }
     else if (args.length > 1) {
-        return { success: false, failReason: "Too many arguments" };
+        return { success: false, failReason: "Too many arguments, did you mean '" + State.COMMAND_PREFIX + "accuse'?" };
     }
     else {
         return { success: false, failReason: "Argument must be an @user tag" };
@@ -137,7 +135,8 @@ function Pardon(channel: DMChannel | GroupDMChannel | TextChannel, sender: User,
 let PardonBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
     let crimeDictionary = State.GetDataStore().GetGlobalValue(ACCUSATIONS_KEY);
     let mention = message.mentions.users.first();
-    var crimeID: number = parseInt(args[2]) - 1;
+    var crimeID: number = parseInt(args[1]) - 1;
+
     if(args.length == 1)
     {
         if(mention) {
@@ -161,7 +160,6 @@ let PardonBehavior: BotFunctionBehavior = (message: Message, channel: TextChanne
     {
         if(mention) {
             // Pardon with a -1 to make the list start at 0
-            console.log("Pardoning user " + mention.tag + " of crime " + crimeID);
             Pardon(channel, message.author, mention, crimeID);
         }
         else {
