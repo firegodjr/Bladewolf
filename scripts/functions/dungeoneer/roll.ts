@@ -1,4 +1,4 @@
-import { BotFunction, BotFunctionBehavior, BehaviorResult } from "../botfunction";
+import { BotFunctionMeta, BotFunction, BotFunctionResult } from "../botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
 import { Speak } from "../../util";
 
@@ -36,7 +36,7 @@ export function rollDice(amount: number, type: number): RollResult {
 }
 
 
-export let rollBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
+export let rollBehavior: BotFunction = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BotFunctionResult => {
     if(args.length < 1) return {success: false, failReason: "Not enough arguments"}
     if(args.length > 2) return {success: false, failReason: "Too many arguments"}
 

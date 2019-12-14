@@ -1,6 +1,6 @@
 import { User, Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js"
 import { State } from "../../state/botstate"
-import { BotFunctionBehavior, BehaviorResult } from "../botfunction"
+import { BotFunction, BotFunctionResult } from "../botfunction"
 import { Speak } from "../../util"
 import { Stat, Advantage } from "./stats"
 import { rollDice } from "./roll"
@@ -88,7 +88,7 @@ interface Spell {
     name: string
 }
 
-function sheetsList(user: User, channel: TextChannel | DMChannel | GroupDMChannel): BehaviorResult {
+function sheetsList(user: User, channel: TextChannel | DMChannel | GroupDMChannel): BotFunctionResult {
     let listStr = "";
     let sheets = getUserSheets(user);
     for(let i = 0; i < sheets.length; ++i) {
@@ -98,7 +98,7 @@ function sheetsList(user: User, channel: TextChannel | DMChannel | GroupDMChanne
     return {success: true}
 }
 
-function sheetsAdd(user: User, channel: TextChannel | DMChannel | GroupDMChannel, sheetName: string): BehaviorResult {
+function sheetsAdd(user: User, channel: TextChannel | DMChannel | GroupDMChannel, sheetName: string): BotFunctionResult {
     let sheet = new Sheet(sheetName)
     let sheets = getUserSheets(user);
     sheets.push(sheet);
@@ -107,7 +107,7 @@ function sheetsAdd(user: User, channel: TextChannel | DMChannel | GroupDMChannel
     return {success: true}
 }
 
-function sheetsRemove(user: User, channel: TextChannel | DMChannel | GroupDMChannel, sheetName: string): BehaviorResult {
+function sheetsRemove(user: User, channel: TextChannel | DMChannel | GroupDMChannel, sheetName: string): BotFunctionResult {
     let sheets = getUserSheets(user);
     for(let i = 0; i < sheets.length; ++i) {
         if(sheets[i].name == sheetName) {
@@ -119,7 +119,7 @@ function sheetsRemove(user: User, channel: TextChannel | DMChannel | GroupDMChan
     return {success: false, failReason: "No sheet with name '" + sheetName + "'"}
 }
 
-function sheetsSet(user: User, channel: TextChannel | DMChannel | GroupDMChannel, sheetName: string): BehaviorResult {
+function sheetsSet(user: User, channel: TextChannel | DMChannel | GroupDMChannel, sheetName: string): BotFunctionResult {
     let sheet = getUserSheet(user, sheetName);
     if(sheet != undefined) {
         State.GetDataStore().SetUserValue(user, primary_sheet_key, sheetName);
@@ -129,7 +129,7 @@ function sheetsSet(user: User, channel: TextChannel | DMChannel | GroupDMChannel
     else return {success: false, failReason: "A sheet with that name does not exist."}
 }
 
-function sheetsSetStat(user: User, channel: TextChannel | DMChannel | GroupDMChannel, stat: string, value: number): BehaviorResult {
+function sheetsSetStat(user: User, channel: TextChannel | DMChannel | GroupDMChannel, stat: string, value: number): BotFunctionResult {
     let sheet = getPrimarySheet(user);
     if(sheet != undefined) {
         let statObj = sheet.getStat(stat);
@@ -144,11 +144,11 @@ function sheetsSetStat(user: User, channel: TextChannel | DMChannel | GroupDMCha
     else return {success: false, failReason: "No primary sheet set."}
 }
 
-function sheetsCheck(user: User, channel: TextChannel | DMChannel | GroupDMChannel): BehaviorResult {
+function sheetsCheck(user: User, channel: TextChannel | DMChannel | GroupDMChannel): BotFunctionResult {
     return {success: true}
 }
 
-export let sheetsBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
+export let sheetsBehavior: BotFunction = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BotFunctionResult => {
     if(args.length == 0) return {success: false, failReason: "Missing arguments"}
     switch(args[0].toLowerCase()) {
 

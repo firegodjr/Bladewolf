@@ -1,10 +1,10 @@
-import { BotFunction, BotFunctionBehavior, BehaviorResult } from "./botfunction";
+import { BotFunctionMeta, BotFunction, BotFunctionResult } from "./botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
 import { PermManager, PermLevel } from "../state/permmgr";
 import { Speak } from "../util";
 import { State } from "../state/botstate";
 
-let permBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
+let permBehavior: BotFunction = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BotFunctionResult => {
     let validPermLevels: string[] = Object.keys(PermLevel).filter(x => !(parseInt(x) >= 0));
     switch(args[0]) {
         case "set":
@@ -79,7 +79,7 @@ let permBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel 
 }
 
 
-let permFunction: BotFunction = {
+let permFunction: BotFunctionMeta = {
     id: "permissions",
     keys: ["perm", "perms", "permission", "permissions"],
     behavior: permBehavior,

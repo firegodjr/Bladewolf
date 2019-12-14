@@ -2,7 +2,7 @@ import { State } from "./botstate"
 import { User, TextChannel, DMChannel, GroupDMChannel, Guild, ChannelData, Channel } from "discord.js";
 import { UserMeta, GuildMeta, PersistentDataStore } from "./persistence";
 import { Dictionary, Speak } from "../util";
-import { BotFunction } from "../functions/botfunction";
+import { BotFunctionMeta } from "../functions/botfunction";
 
 const PERM_KEY = "guild";
 
@@ -68,7 +68,7 @@ export class PermManager {
   }
 
   public static GetFunctionPermLevel(guild: Guild, key: string): PermLevel {
-    let func: BotFunction = State.GetFunctionByKey(key);
+    let func: BotFunctionMeta = State.GetFunctionByKey(key);
     if(func) {
       let funcPermLevel = State.GetDataStore().GetGuildValue(guild, func.id);
       if(funcPermLevel) {

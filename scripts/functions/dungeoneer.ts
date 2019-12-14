@@ -1,10 +1,10 @@
-import { BotFunctionBehavior, BehaviorResult, BotFunction } from "./botfunction"
+import { BotFunction, BotFunctionResult, BotFunctionMeta } from "./botfunction"
 import { Message, Channel } from "discord.js"
 import { sheetsBehavior } from "./dungeoneer/sheets"
 import { rollBehavior } from "./dungeoneer/roll"
 
 
-let sheets: BotFunction = {
+let sheets: BotFunctionMeta = {
     id: "sheets",
     keys: ["sheet5e", "sheets5e"],
     description: "Allows the user to manage their 5e character sheets",
@@ -13,7 +13,7 @@ let sheets: BotFunction = {
     hidden: true
 }
 
-let rollFunction: BotFunction = {
+let rollFunction: BotFunctionMeta = {
     id: "roll",
     keys: ["roll"],
     description: "Rolls some dice",

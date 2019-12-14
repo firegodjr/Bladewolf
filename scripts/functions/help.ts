@@ -1,10 +1,10 @@
-import { BotFunctionBehavior, BotFunction, BehaviorResult } from "./botfunction";
+import { BotFunction, BotFunctionMeta, BotFunctionResult } from "./botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel, Channel } from "discord.js";
 import { Speak } from "../util";
 import { State } from "../state/botstate";
 import { PermLevel, PermManager } from "../state/permmgr";
 
-let help: BotFunctionBehavior = (message: Message, channel: Channel, args: string[]): BehaviorResult => {
+let help: BotFunction = (message: Message, channel: Channel, args: string[]): BotFunctionResult => {
     let thingToSay = "";
     let botFunctions = State.GetRegisteredFunctions();
 
@@ -41,7 +41,7 @@ let help: BotFunctionBehavior = (message: Message, channel: Channel, args: strin
     return {success: true}
 }
 
-let botFunction: BotFunction = {
+let botFunction: BotFunctionMeta = {
     id: "help",
     keys: ["help"],
     description: "Explains the bot functions in detail",

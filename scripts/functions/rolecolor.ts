@@ -1,8 +1,8 @@
-import { BotFunction, BotFunctionBehavior, BehaviorResult } from "./botfunction";
+import { BotFunctionMeta, BotFunction, BotFunctionResult } from "./botfunction";
 import { Message, Channel, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
 import { Speak } from "../util";
 
-let setRoleColor: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
+let setRoleColor: BotFunction = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BotFunctionResult => {
     var role = message.guild.roles.get(message.member.colorRole.id);
     if(role != undefined && role.editable)
     {
@@ -42,7 +42,7 @@ let setRoleColor: BotFunctionBehavior = (message: Message, channel: TextChannel 
     return {success: true}
 }
 
-let botFunction: BotFunction = {
+let botFunction: BotFunctionMeta = {
     id: "rolecolor",
     keys: ["rolecolor", "color", "colorme"],
     description: "Changes the color of your name-coloring role",

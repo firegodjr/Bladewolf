@@ -1,7 +1,7 @@
 import { DMChannel, GroupDMChannel, TextChannel, Message, Client } from "discord.js";
 import { resolve } from "path";
 import { State } from "./state/botstate";
-import { BotFunction } from "./functions/botfunction";
+import { BotFunctionMeta } from "./functions/botfunction";
 var fs = require('fs');
 
 interface BotPluginManifest {
@@ -25,9 +25,9 @@ export function WriteFile(path: string, data: string): void {
 /**
  * Asynchronously loads all bot functions from files
  */
-export function LoadBotFunctions(): BotFunction[]
+export function LoadBotFunctions(): BotFunctionMeta[]
 {
-    let functions: BotFunction[] = []
+    let functions: BotFunctionMeta[] = []
 
     let data = fs.readFileSync(State.MANIFEST_FILE)
     let manifest = JSON.parse(data) as BotPluginManifest;
@@ -38,13 +38,13 @@ export function LoadBotFunctions(): BotFunction[]
                 delete require.cache[require.resolve("./functions/" + bf)];
             }
 
-            let m  = require("./functions/" + bf) as BotFunction | BotFunction[]
-            if((m as BotFunction).behavior) {
-                functions.push(m as BotFunction);
-                console.log("From plugin " + bf + " imported " + (m as BotFunction).id);
+            let m  = require("./functions/" + bf) as BotFunctionMeta | BotFunctionMeta[]
+            if((m as BotFunctionMeta).behavior) {
+                functions.push(m as BotFunctionMeta);
+                console.log("From plugin " + bf + " imported " + (m as BotFunctionMeta).id);
             }
-            else if((m as BotFunction[])[0]) {
-                let arr = m as BotFunction[];
+            else if((m as BotFunctionMeta[])[0]) {
+                let arr = m as BotFunctionMeta[];
                 arr.forEach((func) => {
                     functions.push(func);
                     console.log("From plugin " + bf + " imported " + func.id);
@@ -64,7 +64,7 @@ export function LoadBotFunctions(): BotFunction[]
  * Registers functions with the global BotState object
  * @param botFunctions 
  */
-export function RegisterBotFunctions(botFunctions: BotFunction[]): void
+export function RegisterBotFunctions(botFunctions: BotFunctionMeta[]): void
 {
     botFunctions.forEach((func) => {
         State.RegisterFunctionBehavior(func);
