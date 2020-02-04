@@ -2,7 +2,7 @@ import { State } from "./botstate"
 import { User, TextChannel, DMChannel, GroupDMChannel, Guild, ChannelData, Channel } from "discord.js";
 import { UserMeta, GuildMeta, PersistentDataStore } from "./persistence";
 import { Dictionary, Speak } from "../util/util";
-import { BotFunction } from "../functions/botfunction";
+import { BotFunctionMeta } from "../functions/botfunction";
 
 const PERM_KEY = "guild";
 
@@ -27,6 +27,11 @@ export class PermManager {
     let dataStore: PersistentDataStore = State.GetDataStore();
     const GUILD_KEY = PERM_KEY + guild.id;
     let data: UserMeta = State.GetDataStore().InitGuildMember(guild.member(user));
+    
+    if(guild.owner.user.id == user.id) {
+      console.log("This user is the owner, returning OP");
+      return PermLevel.OP;
+    }
     
     if(data) {
       return data.permLevel;
@@ -63,15 +68,20 @@ export class PermManager {
   }
 
   public static GetFunctionPermLevel(guild: Guild, key: string): PermLevel {
-    let func: BotFunction = State.GetFunctionByKey(key);
-    let funcPermLevel = State.GetDataStore().GetGuildValue(guild, func.id);
-    if(funcPermLevel) {
-      return funcPermLevel;
+    let func: BotFunctionMeta = State.GetFunctionByKey(key);
+    if(func) {
+      let funcPermLevel = State.GetDataStore().GetGuildValue(guild, func.id);
+      if(funcPermLevel) {
+        return funcPermLevel;
+      }
+      else if(func.permLevel) {
+        return func.permLevel;
+      }
+      else return PermLevel.USER;
     }
-    else if(func.permLevel) {
-      return func.permLevel;
+    else {
+      return PermLevel.BLOCKED;
     }
-    else return PermLevel.USER;
   }
 
   /**
@@ -83,7 +93,9 @@ export class PermManager {
    */
   public static SetFunctionPermLevel(guild: Guild, refUser: User, key: string, newPermLevel: PermLevel): boolean {
     let func = State.GetFunctionByKey(key);
-    if(this.GetUserPermLevel(guild, refUser) < this.GetFunctionPermLevel(guild, key)) {
+    let userPerm = this.GetUserPermLevel(guild, refUser);
+    if(userPerm < this.GetFunctionPermLevel(guild, key) || userPerm < newPermLevel) {
+      console.log("User is not allowed to change command perms.");
       return false; 
     }
     else {

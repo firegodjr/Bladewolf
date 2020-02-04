@@ -1,10 +1,10 @@
-import { BotFunctionBehavior, BotFunction, BehaviorResult } from "./botfunction";
-import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
+import { BotFunction, BotFunctionMeta, BotFunctionResult } from "./botfunction";
+import { Message, TextChannel, DMChannel, GroupDMChannel, Channel } from "discord.js";
 import { Speak } from "../util/util";
 import { State } from "../state/botstate";
-import { PermLevel } from "../state/permmgr";
+import { PermLevel, PermManager } from "../state/permmgr";
 
-let help: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
+let help: BotFunction = (message: Message, channel: Channel, args: string[]): BotFunctionResult => {
     let thingToSay = "";
     let botFunctions = State.GetRegisteredFunctions();
 
@@ -29,7 +29,7 @@ let help: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChan
                 thingToSay += "Usage: " + bf.usage + "\n";
             if(bf.description)
                 thingToSay += "Description: " + bf.description + "\n";
-            thingToSay += "Minimum permission level: " + PermLevel[bf.permLevel || PermLevel.USER] + "\n";
+            thingToSay += "Minimum permission level: " + PermLevel[PermManager.GetFunctionPermLevel((channel as TextChannel).guild, args[0]) || bf.permLevel || PermLevel.USER] + "\n";
         }
         else {
             thingToSay = "There is no command with alias '" + args[0] + "'";
@@ -41,7 +41,7 @@ let help: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChan
     return {success: true}
 }
 
-let botFunction: BotFunction = {
+let botFunction: BotFunctionMeta = {
     id: "help",
     keys: ["help"],
     description: "Explains the bot functions in detail",

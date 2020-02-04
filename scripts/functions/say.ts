@@ -1,8 +1,8 @@
-import { BotFunctionBehavior, BotFunction, BehaviorResult } from "./botfunction";
+import { BotFunction, BotFunctionMeta, BotFunctionResult } from "./botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
 import { Quote } from "../util/util";
 
-let say: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
+let say: BotFunction = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BotFunctionResult => {
 
     var thingToSay = "";
     for(var i = 0; i < args.length; ++i)
@@ -14,7 +14,7 @@ let say: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChann
     return {success: true}
 }
 
-let botFunction: BotFunction = {
+let botFunction: BotFunctionMeta = {
     id: "say",
     keys: ["say", "echo", "repeat"],
     description: "Simply repeats what you type after the command",

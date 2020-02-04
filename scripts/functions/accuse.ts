@@ -1,5 +1,5 @@
 import { DMChannel, GroupDMChannel, TextChannel, User, Message } from "discord.js";
-import { BotFunction, BotFunctionBehavior, BehaviorResult } from "./botfunction";
+import { BotFunctionMeta, BotFunction, BotFunctionResult } from "./botfunction";
 import botFunction = require("./help");
 import { State } from "../state/botstate";
 import { MergeArgsPast, Speak } from "../util/util";
@@ -28,7 +28,7 @@ function Accuse(channel: DMChannel | GroupDMChannel | TextChannel, user: User, c
     State.SaveData();
 }
 
-let AccuseBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
+let AccuseBehavior: BotFunction = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BotFunctionResult => {
     var accusation = "";
 
     if(args.length >= 2)
@@ -37,12 +37,11 @@ let AccuseBehavior: BotFunctionBehavior = (message: Message, channel: TextChanne
         if(mention != undefined)
         {
             accusation = MergeArgsPast(args, 1);
-            console.log("accusing " + mention.username + " of " + accusation + "...")
             Accuse(message.channel, mention, accusation);
         }
         else
         {
-            Speak(channel, "I don't know who " + args[1] + " is, but I'm sure they deserve to be called out.");
+            Speak(channel, "Nobody found to accuse, have they been @tagged correctly?");
         }
     }
     else {
@@ -64,7 +63,6 @@ function ListAccusations(channel: DMChannel | GroupDMChannel | TextChannel, user
     var crime = "";
     if(user.tag in crimeDictionary)
     {
-        console.log("We have a record for " + userNick + "!");
         var crimesLength = crimeDictionary[user.tag].length;
         if(crimesLength > 0)
         {
@@ -81,7 +79,7 @@ function ListAccusations(channel: DMChannel | GroupDMChannel | TextChannel, user
     }
 }
 
-let IncriminateBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
+let IncriminateBehavior: BotFunction = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BotFunctionResult => {
     if(args.length == 0) {
         return { success: false, failReason: "Missing user argument" };
     }
@@ -96,7 +94,7 @@ let IncriminateBehavior: BotFunctionBehavior = (message: Message, channel: TextC
         }
     }
     else if (args.length > 1) {
-        return { success: false, failReason: "Too many arguments" };
+        return { success: false, failReason: "Too many arguments, did you mean '" + State.COMMAND_PREFIX + "accuse'?" };
     }
     else {
         return { success: false, failReason: "Argument must be an @user tag" };
@@ -134,10 +132,11 @@ function Pardon(channel: DMChannel | GroupDMChannel | TextChannel, sender: User,
     }
 }
 
-let PardonBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
+let PardonBehavior: BotFunction = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BotFunctionResult => {
     let crimeDictionary = State.GetDataStore().GetGlobalValue(ACCUSATIONS_KEY);
     let mention = message.mentions.users.first();
-    var crimeID: number = parseInt(args[2]) - 1;
+    var crimeID: number = parseInt(args[1]) - 1;
+
     if(args.length == 1)
     {
         if(mention) {
@@ -161,7 +160,6 @@ let PardonBehavior: BotFunctionBehavior = (message: Message, channel: TextChanne
     {
         if(mention) {
             // Pardon with a -1 to make the list start at 0
-            console.log("Pardoning user " + mention.tag + " of crime " + crimeID);
             Pardon(channel, message.author, mention, crimeID);
         }
         else {
@@ -171,7 +169,7 @@ let PardonBehavior: BotFunctionBehavior = (message: Message, channel: TextChanne
     return { success: true }
 }
 
-let accuseFunction: BotFunction = {
+let accuseFunction: BotFunctionMeta = {
     id: "accuse",
     keys: ["accuse"],
     description: "Accuses a user of a crime",
@@ -179,7 +177,7 @@ let accuseFunction: BotFunction = {
     behavior: AccuseBehavior
 }
 
-let incriminateFunction: BotFunction = {
+let incriminateFunction: BotFunctionMeta = {
     id: "incriminate",
     keys: ["incriminate"],
     description: "Lists this user's accusations for all to see",
@@ -187,7 +185,7 @@ let incriminateFunction: BotFunction = {
     behavior: IncriminateBehavior
 }
 
-let pardonFunction: BotFunction = {
+let pardonFunction: BotFunctionMeta = {
     id: "pardon",
     keys: ["pardon", "forgive"],
     description: "Pardons a user of a previous accusation",

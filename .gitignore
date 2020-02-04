@@ -6,10 +6,8 @@ Data/*
 auth.json
 
 # Exclude compiled files
-scripts/*.js
-scripts/*.js.map
-scripts/*/*.js
-scripts/*/*.js.map
+*.js
+*.js.map
 
 # Exclude scripts
 /*.bat

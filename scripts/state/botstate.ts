@@ -1,5 +1,5 @@
 import { Message, TextChannel, DMChannel, GroupDMChannel, Guild } from "discord.js";
-import { BotFunction } from "../functions/botfunction";
+import { BotFunctionMeta } from "../functions/botfunction";
 import { PersistentDataStore } from "./persistence";
 import { Dictionary, WriteFile, ReadFile, Speak } from "../util/util";
 import { PermManager, PermLevel } from "./permmgr";
@@ -7,13 +7,18 @@ import { PermManager, PermLevel } from "./permmgr";
 var Discord = require('discord.js');
 var fs = require('fs');
 
+export interface IBotManifest {
+    prefix?: string,
+    game?: string
+}
+
 /**
  * Singleton module that handles all state-related functionality
  */
 class BotState {
     private _client: any;
     private _behaviorKeywordMap: Dictionary<number> = {}
-    private _botFunctions: BotFunction[] = []
+    private _botFunctions: BotFunctionMeta[] = []
     private _data: PersistentDataStore = new PersistentDataStore();
     private readonly _DATA_STORE_FILE = "./Data/botData.json";
     public readonly MANIFEST_FILE = "./scripts/functions/manifest.json";
@@ -49,7 +54,7 @@ class BotState {
         return this._client;
     }
 
-    public RegisterFunctionBehavior(func: BotFunction): void {
+    public RegisterFunctionBehavior(func: BotFunctionMeta): void {
         this._botFunctions.push(func)
 
         func.keys.forEach((key) => {
@@ -57,11 +62,11 @@ class BotState {
         });
     }
 
-    public GetRegisteredFunctions(): BotFunction[] {
+    public GetRegisteredFunctions(): BotFunctionMeta[] {
         return this._botFunctions;
     }
 
-    public GetFunctionByKey(key: string): BotFunction {
+    public GetFunctionByKey(key: string): BotFunctionMeta {
         return this._botFunctions[this._behaviorKeywordMap[key]];
     }
 
@@ -83,12 +88,14 @@ class BotState {
             console.log("Attempting to execute behavior for key " + key)
             if(PermManager.GetUserHasPermissionToCallFunction(channel, message.author, key)) {
                 let func = this.GetFunctionByKey(key);
-                let result = func.behavior(message, channel, args);
-                console.log(result);
-                if(!result.success) {
-                    Speak(channel, "Command failed: " + key);
-                    if(result.failReason) {
-                        Speak(channel, "Reason: " + result.failReason);
+                if(func) {
+                    let result = func.behavior(message, channel, args);
+                    console.log(result);
+                    if(!result.success) {
+                        Speak(channel, "Command failed: " + key);
+                        if(result.failReason) {
+                            Speak(channel, "Reason: " + result.failReason + (func.usage ? "\nUsage: " + func.usage : ""));
+                        }
                     }
                 }
             }
