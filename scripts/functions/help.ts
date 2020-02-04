@@ -1,6 +1,6 @@
 import { BotFunctionBehavior, BotFunction, BehaviorResult } from "./botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
-import { Speak } from "../util";
+import { Speak } from "../util/util";
 import { State } from "../state/botstate";
 import { PermLevel } from "../state/permmgr";
 

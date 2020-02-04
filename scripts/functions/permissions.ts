@@ -1,7 +1,7 @@
 import { BotFunction, BotFunctionBehavior, BehaviorResult } from "./botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
 import { PermManager, PermLevel } from "../state/permmgr";
-import { Speak } from "../util";
+import { Speak } from "../util/util";
 
 let permBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
     let validPermLevels: string[] = Object.keys(PermLevel).filter(x => !(parseInt(x) >= 0));

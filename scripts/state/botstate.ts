@@ -1,7 +1,7 @@
 import { Message, TextChannel, DMChannel, GroupDMChannel, Guild } from "discord.js";
 import { BotFunction } from "../functions/botfunction";
 import { PersistentDataStore } from "./persistence";
-import { Dictionary, WriteFile, ReadFile, Speak } from "../util";
+import { Dictionary, WriteFile, ReadFile, Speak } from "../util/util";
 import { PermManager, PermLevel } from "./permmgr";
 
 var Discord = require('discord.js');

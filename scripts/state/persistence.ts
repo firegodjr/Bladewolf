@@ -1,4 +1,4 @@
-import { Dictionary, ReadFile, WriteFile } from "../util";
+import { Dictionary, ReadFile, WriteFile } from "../util/util";
 import { resolve } from "path";
 import { PermLevel } from "./permmgr";
 import { Guild, GuildMember, User } from "discord.js";

@@ -1,6 +1,6 @@
 import { BotFunctionBehavior, BehaviorResult, BotFunction } from "./botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
-import { MergeArgsPast, Speak } from "../util";
+import { MergeArgsPast, Speak } from "../util/util";
 
 let rolenameBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
     var role = message.guild.roles.get(message.member.colorRole.id);

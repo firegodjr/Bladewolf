@@ -1,6 +1,6 @@
 import { BotFunction, BotFunctionBehavior, BehaviorResult } from "./botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
-import { Speak } from "../util";
+import { Speak } from "../util/util";
 
 let rollBehavior: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
     if(args.length < 2) return {success: false, failReason: "Not enough arguments"}

@@ -1,6 +1,6 @@
 import { BotFunction, BotFunctionBehavior, BehaviorResult } from "./botfunction";
 import { Message, Channel, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
-import { Speak } from "../util";
+import { Speak } from "../util/util";
 
 let setRoleColor: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
     var role = message.guild.roles.get(message.member.colorRole.id);

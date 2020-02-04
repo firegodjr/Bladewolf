@@ -1,6 +1,6 @@
 import { BotFunctionBehavior, BotFunction, BehaviorResult } from "./botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
-import { Quote } from "../util";
+import { Quote } from "../util/util";
 
 let say: BotFunctionBehavior = (message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BehaviorResult => {
 

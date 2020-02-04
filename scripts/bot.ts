@@ -2,8 +2,9 @@ import { Channel, ChannelData, DMChannel, GroupDMChannel, User, Message, TextCha
 import { Reminder, makeReminder, checkReminders } from "./functions/remind";
 import { State } from "./state/botstate";
 import { BotFunction } from "./functions/botfunction";
-import { Speak, Quote, MergeArgsPast, WriteFile, ParseMessage, LoadBotFunctions, RegisterBotFunctions } from "./util";
+import { Speak, Quote, MergeArgsPast, WriteFile, LoadBotFunctions, RegisterBotFunctions } from "./util/util";
 import { resolve } from "path";
+import { ParseMessage } from "./util/commandparser";
 
 let DATA_DIR = "../Data/"
 

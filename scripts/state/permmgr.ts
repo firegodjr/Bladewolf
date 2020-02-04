@@ -1,7 +1,7 @@
 import { State } from "./botstate"
 import { User, TextChannel, DMChannel, GroupDMChannel, Guild, ChannelData, Channel } from "discord.js";
 import { UserMeta, GuildMeta, PersistentDataStore } from "./persistence";
-import { Dictionary, Speak } from "../util";
+import { Dictionary, Speak } from "../util/util";
 import { BotFunction } from "../functions/botfunction";
 
 const PERM_KEY = "guild";

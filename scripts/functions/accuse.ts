@@ -2,7 +2,7 @@ import { DMChannel, GroupDMChannel, TextChannel, User, Message } from "discord.j
 import { BotFunction, BotFunctionBehavior, BehaviorResult } from "./botfunction";
 import botFunction = require("./help");
 import { State } from "../state/botstate";
-import { MergeArgsPast, Speak } from "../util";
+import { MergeArgsPast, Speak } from "../util/util";
 
 const ACCUSATIONS_KEY = "accusations"
 
