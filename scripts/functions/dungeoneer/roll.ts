@@ -1,6 +1,6 @@
 import { BotFunctionMeta, BotFunction, BotFunctionResult } from "../botfunction";
 import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
-import { Speak } from "../../util";
+import { Speak } from "../../util/util";
 
 interface DiceResult {
     amount: number,

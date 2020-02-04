@@ -1,7 +1,7 @@
 import { User, Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js"
 import { State } from "../../state/botstate"
 import { BotFunction, BotFunctionResult } from "../botfunction"
-import { Speak } from "../../util"
+import { Speak } from "../../util/util"
 import { Stat, Advantage } from "./stats"
 import { rollDice } from "./roll"
 

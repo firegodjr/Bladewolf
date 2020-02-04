@@ -1,6 +1,6 @@
 import { BotFunction, BotFunctionResult, BotFunctionMeta } from "./functions/botfunction"
 import { GroupDMChannel, Message, TextChannel, DMChannel } from "discord.js"
-import { Dictionary } from "./util"
+import { Dictionary } from "./util/util"
 import { PermLevel } from "./state/permmgr"
 
 export class Behavior {

@@ -1,5 +1,5 @@
 import { rollDice } from "./roll";
-import { Speak } from "../../util";
+import { Speak } from "../../util/util";
 import { Channel } from "discord.js";
 
 export enum Advantage {
