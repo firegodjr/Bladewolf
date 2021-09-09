@@ -49,7 +49,7 @@ class BotState {
     
     public GetClient(): any {
         if(!this._client) {
-            this._client = new Discord.Client();
+            this._client = new Discord.Client({ intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_MESSAGES"] });
         }
         return this._client;
     }
@@ -84,9 +84,11 @@ class BotState {
      * @returns True if this command was correctly handled
      */
     public ExecuteBehavior(key: string, message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): boolean {
+        console.log("ExecuteBehavior()")
         if(Object.keys(this._behaviorKeywordMap).includes(key)) {
             console.log("Attempting to execute behavior for key " + key)
-            if(PermManager.GetUserHasPermissionToCallFunction(channel, message.author, key)) {
+            if(true /*PermManager.GetUserHasPermissionToCallFunction(channel, message.author, key)*/) {
+                console.log("User has permission.")
                 let func = this.GetFunctionByKey(key);
                 if(func) {
                     let result = func.behavior(message, channel, args);

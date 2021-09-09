@@ -72,4 +72,8 @@ let getPerm = new Behavior("get", ["get"], "Gets the permissions of a user or co
 
 perm.addSubBehaviors([setPerm, getPerm]);
 
+// FIXME perm does not exist outside of this file, which causes issues in run().
+//   run() exists as a member of BotFunctionMeta at this point
+//   either BotFunctionMeta needs to contain subbehaviors, or Behavior should
+//   replace it going forward.
 export = perm.toBotFunctionMeta()

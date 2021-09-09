@@ -2,7 +2,11 @@ import { BotFunction, BotFunctionResult, BotFunctionMeta } from "./functions/bot
 import { GroupDMChannel, Message, TextChannel, DMChannel } from "discord.js"
 import { Dictionary } from "./util/util"
 import { PermLevel } from "./state/permmgr"
+import { Console } from "console"
 
+/**
+ * High-level encapsulation of a command handler
+ */
 export class Behavior {
     public name = ""
     public aliases: string[] = []
@@ -25,6 +29,7 @@ export class Behavior {
 
     public run(message: Message, channel: TextChannel | DMChannel | GroupDMChannel, args: string[]): BotFunctionResult {
         if(this._subBehaviors[args[0]]) {
+            console.log("Calling subbehavior '" + args[0] + "'");
             return this._subBehaviors[args[0]].run(message, channel, args.slice(1))
         }
         else {

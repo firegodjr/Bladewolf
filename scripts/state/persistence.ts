@@ -24,6 +24,7 @@ export class PersistentDataStore {
     public InitGuild(guild: Guild): GuildMeta {
         let guildKey = this._getGuildKey(guild);
         if(!this._data[guildKey]) {
+            console.log("Creating new persistent entry for guild " + guildKey)
             this._data[guildKey] = {
                 userData: {},
                 data: {}
@@ -47,6 +48,7 @@ export class PersistentDataStore {
         let guildData = this.InitGuild(member.guild);
 
         if(!guildData.data[member.user.id]) {
+            console.log("Creating new persistent entry for guild member " + member.user.id)
             guildData.data[member.user.id] = {
                 permLevel: PermLevel.USER,
                 data: {}
@@ -71,6 +73,7 @@ export class PersistentDataStore {
 
     public InitUser(user: User): UserMeta {
         if(!this._data[user.id]) {
+            console.log("Creating new persistent entry for user " + user.id)
             this._data[user.id] = { data: {} };
         }
 

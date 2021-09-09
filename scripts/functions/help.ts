@@ -43,7 +43,7 @@ let help: BotFunction = (message: Message, channel: Channel, args: string[]): Bo
 
 let botFunction: BotFunctionMeta = {
     id: "help",
-    keys: ["help"],
+    keys: ["help", "h"],
     description: "Explains the bot functions in detail",
     usage: "!help, !help <function>",
     behavior: help

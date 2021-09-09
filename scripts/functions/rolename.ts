@@ -6,7 +6,7 @@ let rolenameBehavior: BotFunction = (message: Message, channel: TextChannel | DM
     var role = message.guild.roles.get(message.member.colorRole.id);
     if(role != undefined && role.editable)
     {
-        var roleName = MergeArgsPast(args, 1);
+        var roleName = MergeArgsPast(args, 0);
         role.edit({name: roleName});
         Speak(channel, "Your role is now '" + roleName + "'");
         return {success: true}

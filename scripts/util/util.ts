@@ -33,13 +33,15 @@ export function LoadBotFunctions(): BotFunctionMeta[]
     let manifest = JSON.parse(data) as BotPluginManifest;
     manifest.botPlugins.forEach((bf: string) => {
         try {
+            // Cursed Javascript Hackery
             // If this module is cached, reimport it to get the newest version
-            if(require.cache[require.resolve("./functions/" + bf)]) {
-                delete require.cache[require.resolve("./functions/" + bf)];
+            if(require.cache[require.resolve("../functions/" + bf)]) {
+                delete require.cache[require.resolve("../functions/" + bf)];
             }
 
-            let m  = require("./functions/" + bf) as BotFunctionMeta | BotFunctionMeta[]
-            if((m as BotFunctionMeta).behavior) {
+            // Load the module as either a singleton or an array of BotFunctionMetas
+            let m  = require("../functions/" + bf) as BotFunctionMeta | BotFunctionMeta[]
+            if((m as BotFunctionMeta).id) { // FIXME using this to decide if it's an array or not is awful
                 functions.push(m as BotFunctionMeta);
                 console.log("From plugin " + bf + " imported " + (m as BotFunctionMeta).id);
             }
@@ -71,11 +73,22 @@ export function RegisterBotFunctions(botFunctions: BotFunctionMeta[]): void
     });
 }
 
+export function FindArgument(find: string[], args: string[]): number
+{
+    for(let str of find) {
+        if(args.includes(str)) {
+            console.log("Found " + str + " at " + args.indexOf(str));
+            return args.indexOf(str);
+        }
+    }
+    return -1;
+}
+
 export function ParseMessage(client: Client, message: Message) {
     let commandPrefix = State.COMMAND_PREFIX;
     if (message.content.startsWith(commandPrefix))
     {
-        console.log("[" + message.author.tag + "]: " + message.content + "'");
+        console.log("[" + message.author.tag + "]: " + message.content);
         var fullCommand = message.content.slice(commandPrefix.length);
         var channel = message.channel;
         var args = fullCommand.split(' ');
@@ -109,12 +122,12 @@ export function ParseMessage(client: Client, message: Message) {
                         }
                         break;
 
-                    // Say something to the given channel
-                    // case '$adminsay':
-                    //     var adminsay = MergeArgsPast(args, 2);
-                    //     Speak(client.channels.get(args[1]), adminsay);
-                    //     Speak(channel, "Saying: '" + adminsay + "'");
-                    //     break;
+                    //Say something to the given channel
+                    case '$adminsay':
+                        var adminsay = MergeArgsPast(args, 2);
+                        Speak(client.channels.get(args[1]) as TextChannel, adminsay);
+                        Speak(channel, "Saying: '" + adminsay + "'");
+                        break;
                     
                     // case '$supersay':
                     //     var supersay = MergeArgsPast(args, 2);
@@ -178,6 +191,6 @@ export function ParseMessage(client: Client, message: Message) {
  export function Speak(channel: DMChannel | GroupDMChannel | TextChannel, thingToSay: string)
  {
      let message = "`>>> " + thingToSay + "`";
-     channel.send(message);
+     channel.send(message); 
     //  console.log("<Bladewolf>: " + message)
  }
